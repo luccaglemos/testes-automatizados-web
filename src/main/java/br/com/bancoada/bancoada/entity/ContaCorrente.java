@@ -18,4 +18,5 @@ public class ContaCorrente {
 
     private String titular;
     private BigDecimal saldo;
+    private boolean ativa = true;
 }

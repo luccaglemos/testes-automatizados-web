@@ -3,6 +3,7 @@ package br.com.bancoada.bancoada.service;
 import br.com.bancoada.bancoada.entity.ContaCorrente;
 import br.com.bancoada.bancoada.repository.ContaCorrenteRepository;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 import java.math.BigDecimal;
 
@@ -11,10 +12,9 @@ public class ContaCorrenteService {
 
     private final ContaCorrenteRepository repository;
 
-    public ContaCorrenteService(ContaCorrenteRepository repository, ServicoDeEnviarEmail servicoDeEnviarEmail) {
+    public ContaCorrenteService(ContaCorrenteRepository repository) {
         this.repository = repository;
     }
-
 
     public BigDecimal sacar(int contaCorrenteId, BigDecimal valor) {
         ContaCorrente conta = repository.findById(contaCorrenteId)
@@ -34,7 +34,16 @@ public class ContaCorrenteService {
     }
 
     public BigDecimal consultarSaldo(int idConta) {
-        return BigDecimal.ZERO;
+
+        Optional<ContaCorrente> optional = repository.findById(idConta);
+
+        if (optional.isPresent()) {
+            ContaCorrente conta = optional.get();
+
+            return conta.getSaldo();
+        }
+
+        throw new IllegalStateException("Conta inexistente");
     }
 
     private void efetuarSaque(ContaCorrente conta, BigDecimal valor) {
