@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,6 +45,13 @@ public class ContaCorrenteServiceTest {
     }
 
     @Test
+    void testaSacarDeContaInexistente() {
+        when(repository.findById(idConta)).thenReturn(Optional.empty());
+        assertThrows(NoSuchElementException.class,
+                () -> service.sacar(idConta, BigDecimal.ONE));
+    }
+
+    @Test
     void testaConsultaSaldo() {
         when(repository.findById(idConta)).thenReturn(Optional.of(contaCorrente));
 
@@ -59,5 +67,18 @@ public class ContaCorrenteServiceTest {
                 () -> service.consultarSaldo(idConta));
         assertEquals("Conta inexistente", exceptionRetornada.getMessage());
     }
+
+    /**
+     * 1. IMPLEMENTAR METODO TRANSFERIR NA CAMADA DE SERVICE
+     * TESTES
+     * 1. SO E POSSIVEL TRANSFERIR SE AS DUAS CONTAS ESTIVEREM ATIVAS
+     * 1.2 SE ALGUMA CONTA ESTIVER INATIVA, DEVE LANÇAR UMA EXCEPTION COM UMA MENSAGEM DESCRITIVA INFORMANDO QUAL DAS CONTAS ESTA INATIVA
+     *
+     * 2. SO E POSSIVEL TRANSFERIR SE AS DUAS CONTAS EXISTIREM
+     * 2.1 SE ALGUMA CONTA NAO EXISTIR, DEVE LANÇAR UMA EXCEPTION COM UMA MENSAGEM DESCRITIVA INFORMANDO QUAL DAS CONTAS NAO EXISTE
+     *
+     * 3. SO E POSSIVEL TRANSFERIR SE A CONTA DE ORIGEM TIVER SALDO SUFICIENTE
+     * 3.1 SE A CONTA DE ORIGEM NAO TIVER SALDO SUFICIENTE, DEVE LANÇAR UMA EXCEPTION COM UMA MENSAGEM DESCRITIVA
+     */
 
 }
