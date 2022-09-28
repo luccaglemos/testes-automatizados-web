@@ -19,12 +19,14 @@ public class ContaCorrenteController {
 
     private final ContaCorrenteService service;
 
+    // www.bancoada.com/conta-corrente/saldo?id=1
     @GetMapping("/saldo")
     public BigDecimal consultarSaldo(@RequestParam("id") int idConta) {
         BigDecimal saldo = service.consultarSaldo(idConta);
         return saldo;
     }
 
+    // www.bancoada.com/conta-corrente/1/sacar/20
     @PostMapping("/{id_conta}/sacar/{valor}")
     public ResponseEntity<BigDecimal> sacar(@PathVariable("id_conta") int idconta, @PathVariable BigDecimal valor) {
         BigDecimal novoSaldo = service.sacar(idconta, valor);
