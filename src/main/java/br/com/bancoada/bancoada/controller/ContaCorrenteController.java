@@ -2,10 +2,12 @@ package br.com.bancoada.bancoada.controller;
 
 import br.com.bancoada.bancoada.service.ContaCorrenteService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,11 +35,19 @@ public class ContaCorrenteController {
         return ResponseEntity.ok(novoSaldo);
     }
 
+    // www.bancoada.com/conta-corrente/1/transferir/2/20
     @PostMapping("/{id_conta_origem}/transferir/{id_conta_destino}/{valor}")
     public ResponseEntity<BigDecimal> transferir(@PathVariable("id_conta_origem") int idContaOrigem,
-                                           @PathVariable("id_conta_destino") int idContaDestino,
-                                           @PathVariable BigDecimal valor) {
+                                                 @PathVariable("id_conta_destino") int idContaDestino,
+                                                 @PathVariable BigDecimal valor) {
+
         BigDecimal novoSaldoOrigem = service.transferir(idContaOrigem, idContaDestino, valor);
         return ResponseEntity.ok(novoSaldoOrigem);
+    }
+
+    @PutMapping("/{idConta}/depositar/{valor}")
+    public ResponseEntity<Void> depositar(@PathVariable int idConta, @PathVariable BigDecimal valor) {
+        service.depositar(idConta, valor);
+        return ResponseEntity.ok().build();
     }
 }

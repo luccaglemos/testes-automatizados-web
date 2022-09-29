@@ -69,6 +69,9 @@ public class ContaCorrenteService {
         throw new IllegalStateException("Conta inexistente");
     }
 
+    public void depositar(int idConta, BigDecimal valor) {
+    }
+
     private void efetuarSaque(ContaCorrente conta, BigDecimal valor) {
         conta.setSaldo(conta.getSaldo().subtract(valor));
         repository.save(conta);
