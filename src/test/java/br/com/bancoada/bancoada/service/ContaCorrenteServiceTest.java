@@ -146,17 +146,16 @@ public class ContaCorrenteServiceTest {
         assertEquals(new BigDecimal(80), contaCorrente.getSaldo());
     }
 
-    /**
-     * 1. IMPLEMENTAR METODO TRANSFERIR NA CAMADA DE SERVICE
-     * TESTES
-     * 1. SO E POSSIVEL TRANSFERIR SE AS DUAS CONTAS ESTIVEREM ATIVAS
-     * 1.2 SE ALGUMA CONTA ESTIVER INATIVA, DEVE LANÇAR UMA EXCEPTION COM UMA MENSAGEM DESCRITIVA INFORMANDO QUAL DAS CONTAS ESTA INATIVA
-     *
-     * 2. SO E POSSIVEL TRANSFERIR SE AS DUAS CONTAS EXISTIREM
-     * 2.1 SE ALGUMA CONTA NAO EXISTIR, DEVE LANÇAR UMA EXCEPTION COM UMA MENSAGEM DESCRITIVA INFORMANDO QUAL DAS CONTAS NAO EXISTE
-     *
-     * 3. SO E POSSIVEL TRANSFERIR SE A CONTA DE ORIGEM TIVER SALDO SUFICIENTE
-     * 3.1 SE A CONTA DE ORIGEM NAO TIVER SALDO SUFICIENTE, DEVE LANÇAR UMA EXCEPTION COM UMA MENSAGEM DESCRITIVA
-     */
+    @Test
+    void testarMetodoDepositarComContaInativa() {
+        contaCorrente.setAtiva(false);
+        when(repository.findById(idConta)).thenReturn(Optional.of(contaCorrente));
+
+        ContaInativaException exception = assertThrows(ContaInativaException.class,
+                () -> service.depositar(idConta, new BigDecimal(20)));
+
+        assertEquals("conta inativa", exception.getMessage());
+
+    }
 
 }

@@ -1,6 +1,5 @@
 package br.com.bancoada.bancoada.controller;
 
-import br.com.bancoada.bancoada.exception.ContaInativaException;
 import br.com.bancoada.bancoada.exception.ContaInexistenteException;
 import br.com.bancoada.bancoada.service.ContaCorrenteService;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +15,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.math.BigDecimal;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -76,11 +76,12 @@ public class ContaCorrenteControllerTest {
     @Test
     void transferirHttpTestComContaInexistente() throws Exception {
         when(service.transferir(1, 2, new BigDecimal(20)))
-                .thenThrow(ContaInexistenteException.class);
+                .thenThrow(new ContaInexistenteException("conta inexistente exception"));
 
         mockMvc.perform(post("/conta-corrente/1/transferir/2/20"))
                 .andDo(print())
                 .andExpect(status().isNotFound())
+                .andExpect(result -> Assertions.assertEquals("conta inexistente exception", result.getResolvedException().getMessage()))
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ContaInexistenteException));
 
     }
@@ -99,4 +100,30 @@ public class ContaCorrenteControllerTest {
 
         verify(service, times(1)).depositar(1, new BigDecimal(20));
     }
+
+    @Test
+    void depositarHttpTestComContaInexistente() throws Exception {
+        // solucao do cleber
+//        when(service.depositar(1, new BigDecimal(40)))
+//                .thenThrow(ContaInexistenteException.class);
+
+        doThrow(new ContaInexistenteException("conta inexistente"))
+                .when(service).depositar(1, new BigDecimal(40));
+
+        mockMvc.perform(put("/conta-corrente/1/depositar/40"))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ContaInexistenteException))
+                .andExpect(result -> Assertions.assertEquals("conta inexistente", result.getResolvedException().getMessage()));
+    }
+
+    /**
+     * 1. CRIAR TESTE PARA [CONTROLLER] DEPOSITAR COM CONTA INATIVA (deve lançar uma exception própria)
+     * 2. CRIAR TESTE PARA [CONTROLLER] DEPOSITAR CAMINHO FELIZ
+     * 3. CRIAR TESTE PARA [SERVICE] DEPOSITAR COM CONTA INEXISTENTE (deve lançar uma exception própria)
+     * [já foi feito] 4. CRIAR TESTE PARA [SERVICE] DEPOSITAR COM CONTA INATIVA (deve lançar uma exception própria)
+     * 5. CRIAR TESTE PARA [SERVICE] DEPOSITAR CAMINHO FELIZ
+     *
+     * 6. IMPLEMENTAR METODO DEPOSITAR
+     */
 }
