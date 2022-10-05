@@ -116,14 +116,4 @@ public class ContaCorrenteControllerTest {
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ContaInexistenteException))
                 .andExpect(result -> Assertions.assertEquals("conta inexistente", result.getResolvedException().getMessage()));
     }
-
-    /**
-     * 1. CRIAR TESTE PARA [CONTROLLER] DEPOSITAR COM CONTA INATIVA (deve lançar uma exception própria)
-     * 2. CRIAR TESTE PARA [CONTROLLER] DEPOSITAR CAMINHO FELIZ
-     * 3. CRIAR TESTE PARA [SERVICE] DEPOSITAR COM CONTA INEXISTENTE (deve lançar uma exception própria)
-     * [já foi feito] 4. CRIAR TESTE PARA [SERVICE] DEPOSITAR COM CONTA INATIVA (deve lançar uma exception própria)
-     * 5. CRIAR TESTE PARA [SERVICE] DEPOSITAR CAMINHO FELIZ
-     *
-     * 6. IMPLEMENTAR METODO DEPOSITAR
-     */
 }

@@ -2,6 +2,7 @@ package br.com.bancoada.bancoada.service;
 
 import br.com.bancoada.bancoada.entity.ContaCorrente;
 import br.com.bancoada.bancoada.exception.ContaInativaException;
+import br.com.bancoada.bancoada.exception.ContaInexistenteException;
 import br.com.bancoada.bancoada.exception.ContaSemSaldoException;
 import br.com.bancoada.bancoada.repository.ContaCorrenteRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
@@ -147,6 +149,14 @@ public class ContaCorrenteServiceTest {
     }
 
     @Test
+    void testaDepositar() {
+        when(repository.findById(idConta)).thenReturn(Optional.of(contaCorrente));
+        when(repository.save(Mockito.any())).thenReturn(null);
+
+        service.depositar(idConta, new BigDecimal(20));
+    }
+
+    @Test
     void testarMetodoDepositarComContaInativa() {
         contaCorrente.setAtiva(false);
         when(repository.findById(idConta)).thenReturn(Optional.of(contaCorrente));
@@ -156,6 +166,15 @@ public class ContaCorrenteServiceTest {
 
         assertEquals("conta inativa", exception.getMessage());
 
+    }
+
+    @Test
+    void testarDepositoContaInexiste() {
+        when(repository.findById(idConta)).thenReturn(Optional.empty());
+
+        IllegalStateException retornoEexception = assertThrows(IllegalStateException.class,
+                () -> service.depositar(idConta, new BigDecimal(20)));
+        assertEquals("Conta inexistente", retornoEexception.getMessage());
     }
 
 }

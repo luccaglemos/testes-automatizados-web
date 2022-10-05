@@ -18,6 +18,11 @@ public class ContaCorrenteService {
         this.repository = repository;
     }
 
+    public ContaCorrente criarConta(ContaCorrente contaCorrente) {
+        // toda a lógica para salvar uma nova conta no banco de dados
+        return null;
+    }
+
     public BigDecimal sacar(int contaCorrenteId, BigDecimal valor) {
 
         ContaCorrente conta = repository.findById(contaCorrenteId)
@@ -70,6 +75,15 @@ public class ContaCorrenteService {
     }
 
     public void depositar(int idConta, BigDecimal valor) {
+        ContaCorrente conta = repository.findById(idConta)
+                .orElseThrow(() -> new IllegalStateException("Conta inexistente"));
+
+        if (!conta.isAtiva()) {
+            throw new ContaInativaException("conta inativa");
+        }
+
+        conta.setSaldo(conta.getSaldo().add(valor));
+        repository.save(conta);
     }
 
     private void efetuarSaque(ContaCorrente conta, BigDecimal valor) {

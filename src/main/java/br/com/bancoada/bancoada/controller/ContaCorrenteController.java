@@ -1,13 +1,14 @@
 package br.com.bancoada.bancoada.controller;
 
+import br.com.bancoada.bancoada.entity.ContaCorrente;
 import br.com.bancoada.bancoada.service.ContaCorrenteService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,12 @@ import java.math.BigDecimal;
 public class ContaCorrenteController {
 
     private final ContaCorrenteService service;
+
+    @PostMapping("nova-conta")
+    public ContaCorrente criarNovaConta(@RequestBody ContaCorrente contaCorrente) {
+        // chamada para uma nova conta
+        return null;
+    }
 
     // www.bancoada.com/conta-corrente/saldo?id=1
     @GetMapping("/saldo")
@@ -50,4 +57,22 @@ public class ContaCorrenteController {
         service.depositar(idConta, valor);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     *TRABALHO FINAL
+     *
+     * Implementar o teste unitário do criar conta;
+     * Implementar o teste de integração do criar conta;
+     *
+     * Implementar o método criar conta no service;
+     * Implementar o endpoint criar conta;
+     *
+     *
+     * - requisitos
+     * 1. um titular deve ser informado
+     * 2. não é possível criar uma conta com zero ou menos reais, deve começar com um valor
+     *
+     * * bonus
+     * 3. deve ser retornado um status 201 created em caso de sucesso com o objeto da nova conta com id
+     */
 }
